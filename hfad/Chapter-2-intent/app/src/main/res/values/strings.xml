@@ -1,3 +1,4 @@
 <resources>
   <string name="app_name">Chapter-2-intent</string>
+  <string name="send">Send a Message</string>
 </resources>
