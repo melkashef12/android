@@ -1,5 +1,6 @@
 package com.hfad.chapter7_fragments;
 
+import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.view.LayoutInflater;
@@ -15,9 +16,21 @@ public class WorkoutDetailFragment extends Fragment {
   }
 
   @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-    // Inflate the layout for this fragment
-    retrieveWorkoutId(savedInstanceState);
+    if(savedInstanceState != null){
+      restoreState(savedInstanceState);
+    } else {
+      replaceStopWatchFragment();
+    }
     return inflater.inflate(R.layout.fragment_workout_detail, container, false);
+  }
+
+  private void replaceStopWatchFragment() {
+    FragmentTransaction ft = getChildFragmentManager().beginTransaction();
+    StopwatchFragment stopwatchFragment = new StopwatchFragment();
+    ft.replace(R.id.stopwatch_container,stopwatchFragment);
+    ft.addToBackStack(null);
+    ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+    ft.commit();
   }
 
 
@@ -39,13 +52,11 @@ public class WorkoutDetailFragment extends Fragment {
   }
 
 
-  private void retrieveWorkoutId(Bundle savedInstanceState) {
-    if(savedInstanceState != null){
-      this.workoukId = savedInstanceState.getLong("workoutId");
-    }
-  }
-
   public void setWorkoukId(long workoukId) {
     this.workoukId = workoukId;
+  }
+
+  private void restoreState(Bundle savedInstanceState) {
+    this.workoukId = savedInstanceState.getLong("workoutId");
   }
 }

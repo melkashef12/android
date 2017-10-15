@@ -1,10 +1,8 @@
 package com.hfad.chapter7_fragments;
 
-import android.app.Activity;
+import android.app.ListFragment;
 import android.content.Context;
 import android.os.Bundle;
-import android.app.Fragment;
-import android.app.ListFragment;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,9 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-/**
- * A simple {@link Fragment} subclass.
- */
+
 public class WorkoutListFragment extends ListFragment {
 
   private WorkoutListListener listener;
@@ -23,11 +19,11 @@ public class WorkoutListFragment extends ListFragment {
   }
 
   @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-    View view = super.onCreateView(inflater,container,savedInstanceState);
+    View layout = super.onCreateView(inflater,container,savedInstanceState);
     String[] names = extractNamesFromWorkouts();
     ArrayAdapter<String> adapter = initAdapter(inflater, names);
     setListAdapter(adapter);
-    return view;
+    return layout;
   }
 
   @Override public void onAttach(Context activity) {
