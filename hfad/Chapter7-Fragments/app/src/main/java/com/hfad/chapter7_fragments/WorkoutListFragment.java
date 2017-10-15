@@ -23,10 +23,11 @@ public class WorkoutListFragment extends ListFragment {
   }
 
   @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    View view = super.onCreateView(inflater,container,savedInstanceState);
     String[] names = extractNamesFromWorkouts();
     ArrayAdapter<String> adapter = initAdapter(inflater, names);
     setListAdapter(adapter);
-    return super.onCreateView(inflater,container,savedInstanceState);
+    return view;
   }
 
   @Override public void onAttach(Context activity) {
