@@ -41,11 +41,7 @@ public class WorkoutListFragment extends ListFragment {
   }
 
   @NonNull private ArrayAdapter<String> initAdapter(LayoutInflater inflater, String[] names) {
-    return new ArrayAdapter<String>(
-          inflater.getContext(),
-          android.R.layout.simple_list_item_1,
-          names
-      );
+    return new ArrayAdapter<>(inflater.getContext(), android.R.layout.simple_list_item_1, names);
   }
 
   private String[] extractNamesFromWorkouts() {
