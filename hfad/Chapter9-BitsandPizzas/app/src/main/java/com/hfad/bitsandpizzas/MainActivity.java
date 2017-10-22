@@ -6,7 +6,6 @@ import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -31,17 +30,18 @@ public class MainActivity extends Activity {
     setContentView(R.layout.activity_main);
 
     this.titles = getResources().getStringArray(R.array.titles);
-    this.drawerList = findViewById(R.id.drawer);
     this.drawerLayout = findViewById(R.id.drawer_layout);
+    this.drawerList = findViewById(R.id.drawer);
     //Init and set adapter for the drawer
     ArrayAdapter<String> drawerAdapter = initDrawerAdapter();
     drawerList.setAdapter(drawerAdapter);
     //On Click
     drawerList.setOnItemClickListener(new DrawerItemClickListener());
+    //First Launch
     if(savedInstanceState == null){
       selectItem(0);
     }
-    //Drawer Listner
+    //Drawer Listener
     this.drawerToggle = initActionBarDrawableToggle();
     drawerLayout.addDrawerListener(drawerToggle);
     //Enable the drawer to open and close
@@ -49,33 +49,12 @@ public class MainActivity extends Activity {
     getActionBar().setHomeButtonEnabled(true);
   }
 
-  @NonNull private ArrayAdapter<String> initDrawerAdapter() {
-    return new ArrayAdapter<>(this,android.R.layout.simple_list_item_activated_1,titles);
-  }
-
   @Override public boolean onCreateOptionsMenu(Menu menu) {
     getMenuInflater().inflate(R.menu.menu_main,menu);
     MenuItem menuItem = menu.findItem(R.id.action_share);
     this.shareActionProvider = (ShareActionProvider) menuItem.getActionProvider();
-    setIntent("This is a example text");
+    setShareIntent("This is a example text");
     return super.onCreateOptionsMenu(menu);
-  }
-
-  @Override protected void onPostCreate(@Nullable Bundle savedInstanceState) {
-    super.onPostCreate(savedInstanceState);
-    drawerToggle.syncState();
-  }
-
-  @Override public void onConfigurationChanged(Configuration newConfig) {
-    super.onConfigurationChanged(newConfig);
-    drawerToggle.onConfigurationChanged(newConfig);
-  }
-
-  private void setIntent(String text) {
-    Intent intent = new Intent(Intent.ACTION_SEND);
-    intent.setType("text/plain");
-    intent.putExtra(Intent.EXTRA_TEXT,text);
-    shareActionProvider.setShareIntent(intent);
   }
 
   @Override public boolean onOptionsItemSelected(MenuItem item) {
@@ -100,14 +79,39 @@ public class MainActivity extends Activity {
     return super.onPrepareOptionsMenu(menu);
   }
 
+  @Override protected void onPostCreate(@Nullable Bundle savedInstanceState) {
+    super.onPostCreate(savedInstanceState);
+    drawerToggle.syncState();
+  }
+
+  @Override public void onConfigurationChanged(Configuration newConfig) {
+    super.onConfigurationChanged(newConfig);
+    drawerToggle.onConfigurationChanged(newConfig);
+  }
+
+  private ArrayAdapter<String> initDrawerAdapter() {
+    return new ArrayAdapter<>(this, android.R.layout.simple_list_item_activated_1, titles);
+  }
+
+  private void setShareIntent(String text) {
+    Intent intent = new Intent(Intent.ACTION_SEND);
+    intent.setType("text/plain");
+    intent.putExtra(Intent.EXTRA_TEXT, text);
+    shareActionProvider.setShareIntent(intent);
+  }
+
   private void selectItem(int position) {
     replaceFragment(position);
     setActionBarTitle(position);
     closeDrawer();
   }
 
-
   private void replaceFragment(int position) {
+    Fragment fragment = selectFragment(position);
+    doReplaceFragmentInTransaction(fragment);
+  }
+
+  private Fragment selectFragment(int position) {
     Fragment fragment;
     switch (position){
       case 1 :
@@ -122,7 +126,10 @@ public class MainActivity extends Activity {
       default :
         fragment = new TopFragment();
     }
+    return fragment;
+  }
 
+  private void doReplaceFragmentInTransaction(Fragment fragment) {
     FragmentTransaction transaction = getFragmentManager().beginTransaction();
     transaction.replace(R.id.content_frame,fragment);
     transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
@@ -141,7 +148,6 @@ public class MainActivity extends Activity {
   }
 
   private void closeDrawer() {
-
     drawerLayout.closeDrawer(drawerList);
   }
 
