@@ -19,11 +19,13 @@ import android.widget.ShareActionProvider;
 
 public class MainActivity extends Activity {
 
+  private static final String CURRENT_POSITION = "currentPosition";
   private ShareActionProvider shareActionProvider;
   private DrawerLayout drawerLayout;
   private String[] titles;
   private ListView drawerList;
   private ActionBarDrawerToggle drawerToggle;
+  private int currentPosition;
 
   @Override protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -37,16 +39,30 @@ public class MainActivity extends Activity {
     drawerList.setAdapter(drawerAdapter);
     //On Click
     drawerList.setOnItemClickListener(new DrawerItemClickListener());
-    //First Launch
-    if(savedInstanceState == null){
+
+    //Retrieve state or select first fragment
+    if( savedInstanceState !=null){
+      restoreSavedState(savedInstanceState);
+    } else {
       selectItem(0);
     }
+
     //Drawer Listener
     this.drawerToggle = initActionBarDrawableToggle();
     drawerLayout.addDrawerListener(drawerToggle);
     //Enable the drawer to open and close
     getActionBar().setDisplayHomeAsUpEnabled(true);
     getActionBar().setHomeButtonEnabled(true);
+  }
+
+  private void restoreSavedState(Bundle savedInstanceState) {
+      this.currentPosition = savedInstanceState.getInt(CURRENT_POSITION);
+      setActionBarTitle(currentPosition);
+  }
+
+  @Override public void onSaveInstanceState(Bundle outState) {
+    super.onSaveInstanceState(outState);
+    outState.putInt(CURRENT_POSITION,currentPosition);
   }
 
   @Override public boolean onCreateOptionsMenu(Menu menu) {
@@ -101,9 +117,14 @@ public class MainActivity extends Activity {
   }
 
   private void selectItem(int position) {
+    setCurrentPosition(position);
     replaceFragment(position);
     setActionBarTitle(position);
     closeDrawer();
+  }
+
+  private void setCurrentPosition(int position) {
+    this.currentPosition = position;
   }
 
   private void replaceFragment(int position) {
