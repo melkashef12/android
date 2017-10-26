@@ -2,6 +2,7 @@ package com.hfad.bitsandpizzas;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -53,6 +54,27 @@ public class MainActivity extends Activity {
     //Enable the drawer to open and close
     getActionBar().setDisplayHomeAsUpEnabled(true);
     getActionBar().setHomeButtonEnabled(true);
+
+    addOnBackStackChangedListener();
+  }
+
+  private void addOnBackStackChangedListener() {
+      getFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
+        @Override public void onBackStackChanged() {
+          Fragment fragment = getFragmentManager().findFragmentByTag("visible_fragment");
+          if(fragment instanceof TopFragment){
+             setCurrentPosition(0);
+          } else if(fragment instanceof PizzaFragment){
+              setCurrentPosition(1);
+          } else if(fragment instanceof PastaFragment){
+            setCurrentPosition(2);
+          } else if(fragment instanceof StoreFragment){
+            setCurrentPosition(3);
+          }
+          setActionBarTitle(MainActivity.this.currentPosition);
+          drawerList.setItemChecked(MainActivity.this.currentPosition,true);
+        }
+      });
   }
 
   private void restoreSavedState(Bundle savedInstanceState) {
@@ -152,7 +174,7 @@ public class MainActivity extends Activity {
 
   private void doReplaceFragmentInTransaction(Fragment fragment) {
     FragmentTransaction transaction = getFragmentManager().beginTransaction();
-    transaction.replace(R.id.content_frame,fragment);
+    transaction.replace(R.id.content_frame,fragment,"visible_fragment");
     transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
     transaction.addToBackStack(null);
     transaction.commit();
