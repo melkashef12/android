@@ -2,7 +2,6 @@ package com.hfad.chapter6_listview;
 
 import android.app.ListActivity;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -17,9 +16,9 @@ public class DrinkCategoryActivity extends ListActivity {
 
   @Override protected void onListItemClick(ListView l, View v, int position, long id) {
     Intent intent = new Intent(this, DrinkActivity.class);
-    intent.putExtra(DrinkActivity.EXTRA_DRINKNO,(int)id);
+    intent.putExtra(DrinkActivity.EXTRA_DRINKNO,(int)id+1);
     startActivity(intent);
-  }
+  } 
 
   private void setListViewBehaviour() {
     ListView listDrinks = getListView();

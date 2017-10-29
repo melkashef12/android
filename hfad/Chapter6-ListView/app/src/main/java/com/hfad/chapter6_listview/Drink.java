@@ -14,6 +14,9 @@ public class Drink {
       new Drink("Filter","Highest quality beans roasted and brewed fresh",R.drawable.filter),
   };
 
+  public Drink() {
+  }
+
   public Drink(String name, String description, int imageResourceId) {
     this.name = name;
     this.description = description;
@@ -31,6 +34,18 @@ public class Drink {
 
   public int getImageResourceId() {
     return imageResourceId;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public void setDescription(String description) {
+    this.description = description;
+  }
+
+  public void setImageResourceId(int imageResourceId) {
+    this.imageResourceId = imageResourceId;
   }
 
   @Override public String toString() {
