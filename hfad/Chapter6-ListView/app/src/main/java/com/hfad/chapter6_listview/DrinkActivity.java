@@ -1,13 +1,18 @@
 package com.hfad.chapter6_listview;
 
 import android.app.Activity;
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import static com.hfad.chapter6_listview.SqlUtils.showException;
 
 public class DrinkActivity extends Activity {
 
@@ -29,6 +34,9 @@ public class DrinkActivity extends Activity {
 
     TextView description = findViewById(R.id.description);
     description.setText(drink.getDescription());
+
+    CheckBox favoriteCheckBox = findViewById(R.id.favorite);
+    favoriteCheckBox.setChecked(drink.isFavorite());
   }
 
   private Drink loadDrink(int drinkno) {
@@ -44,7 +52,7 @@ public class DrinkActivity extends Activity {
       cursor.close();
       db.close();
     } catch (SQLiteException e) {
-      showException(e);
+      showException(this,e);
     }
 
     return drink;
@@ -58,7 +66,7 @@ public class DrinkActivity extends Activity {
 
   private Cursor queryForDrink(int drinkno, SQLiteDatabase db) {
     return db.query("DRINK",
-        new String[] { "NAME", "DESCRIPTION", "IMAGE_RESOURCE_ID" },
+        new String[] { "NAME", "DESCRIPTION", "IMAGE_RESOURCE_ID", "FAVORITE" },
         "_id = ?",
         new String[] { Integer.toString(drinkno) }
         , null, null, null);
@@ -69,11 +77,32 @@ public class DrinkActivity extends Activity {
     drink.setName(cursor.getString(0));
     drink.setDescription(cursor.getString(1));
     drink.setImageResourceId(cursor.getInt(2));
+    drink.setFavorite(cursor.getInt(3) == 1);
     return drink;
   }
 
-  private void showException(SQLiteException e) {
-    Toast toast = Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT);
-    toast.show();
+  public void onFavoriteClicked(View view) {
+    int drinkno = getIntent().getExtras().getInt(EXTRA_DRINKNO);
+    CheckBox favorite = findViewById(R.id.favorite);
+
+    ContentValues drinkValues = new ContentValues();
+    drinkValues.put("FAVORITE", favorite.isChecked());
+
+    SQLiteOpenHelper helper = new StarbuzzDatabaseHelper(this);
+    try {
+      SQLiteDatabase db = helper.getWritableDatabase();
+      db.update(
+          "DRINK",
+          drinkValues,
+          "_id = ?",
+          new String[]{Integer.toString(drinkno)}
+
+      );
+
+      db.close();
+
+    } catch(SQLiteException ex){
+      showException(this,ex);
+    }
   }
 }

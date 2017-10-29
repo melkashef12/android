@@ -10,7 +10,8 @@ import android.view.View;
 import android.widget.CursorAdapter;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
-import android.widget.Toast;
+
+import static com.hfad.chapter6_listview.SqlUtils.showException;
 
 public class DrinkCategoryActivity extends ListActivity {
 
@@ -57,14 +58,10 @@ public class DrinkCategoryActivity extends ListActivity {
       listDrinks.setAdapter(adapter);
 
     } catch(SQLiteException ex){
-      showException(ex);
+      showException(this,ex);
     }
 
 
   }
 
-  private void showException(SQLiteException e) {
-    Toast toast = Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT);
-    toast.show();
-  }
 }

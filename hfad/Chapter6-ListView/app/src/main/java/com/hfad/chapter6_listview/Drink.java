@@ -7,6 +7,7 @@ public class Drink {
   private String name;
   private String description;
   private int imageResourceId;
+  private boolean favorite;
 
   public Drink() {
   }
@@ -23,6 +24,10 @@ public class Drink {
     return imageResourceId;
   }
 
+  public boolean isFavorite() {
+    return favorite;
+  }
+
   public void setName(String name) {
     this.name = name;
   }
@@ -33,6 +38,10 @@ public class Drink {
 
   public void setImageResourceId(int imageResourceId) {
     this.imageResourceId = imageResourceId;
+  }
+
+  public void setFavorite(boolean favorite) {
+    this.favorite = favorite;
   }
 
   @Override public String toString() {
