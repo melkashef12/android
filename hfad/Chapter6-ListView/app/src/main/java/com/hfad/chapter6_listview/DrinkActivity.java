@@ -1,11 +1,11 @@
 package com.hfad.chapter6_listview;
 
-import android.support.v7.app.AppCompatActivity;
+import android.app.Activity;
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class DrinkActivity extends AppCompatActivity {
+public class DrinkActivity extends Activity {
 
   public static final String EXTRA_DRINKNO = "drinkno";
 
@@ -16,13 +16,13 @@ public class DrinkActivity extends AppCompatActivity {
     int drinkno = getIntent().getExtras().getInt(EXTRA_DRINKNO);
     Drink drink = Drink.drinks[drinkno];
 
-    ImageView photo = (ImageView) findViewById(R.id.photo);
+    ImageView photo = findViewById(R.id.photo);
     photo.setImageResource(drink.getImageResourceId());
 
-    TextView name = (TextView) findViewById(R.id.name);
+    TextView name =  findViewById(R.id.name);
     name.setText(drink.getName());
 
-    TextView description = (TextView) findViewById(R.id.description);
+    TextView description =  findViewById(R.id.description);
     description.setText(drink.getDescription());
 
   }
