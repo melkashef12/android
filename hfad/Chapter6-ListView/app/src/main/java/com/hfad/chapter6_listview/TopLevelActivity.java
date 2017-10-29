@@ -6,12 +6,14 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import com.facebook.stetho.Stetho;
 
 public class TopLevelActivity extends Activity {
 
   @Override protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_top_level);
+    Stetho.initializeWithDefaults(this);
     setListViewBehaviour();
   }
 
