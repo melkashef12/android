@@ -6,11 +6,13 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import static com.hfad.chapter6_listview.SqlUtils.showException;
 
@@ -83,26 +85,45 @@ public class DrinkActivity extends Activity {
 
   public void onFavoriteClicked(View view) {
     int drinkno = getIntent().getExtras().getInt(EXTRA_DRINKNO);
-    CheckBox favorite = findViewById(R.id.favorite);
+    new UpdateDrinkTask().execute(drinkno);
+  }
 
-    ContentValues drinkValues = new ContentValues();
-    drinkValues.put("FAVORITE", favorite.isChecked());
+  private class UpdateDrinkTask extends AsyncTask<Integer,Void,Boolean> {
+    ContentValues drinkValues;
 
-    SQLiteOpenHelper helper = new StarbuzzDatabaseHelper(this);
-    try {
-      SQLiteDatabase db = helper.getWritableDatabase();
-      db.update(
-          "DRINK",
-          drinkValues,
-          "_id = ?",
-          new String[]{Integer.toString(drinkno)}
+    @Override protected void onPreExecute() {
+      super.onPreExecute();
+      CheckBox favorite = findViewById(R.id.favorite);
+      this.drinkValues = new ContentValues();
+      this.drinkValues.put("FAVORITE", favorite.isChecked());
+    }
 
-      );
+    @Override protected Boolean doInBackground(Integer... drinks) {
+      int drinkno = drinks[0];
+      SQLiteOpenHelper helper = new StarbuzzDatabaseHelper(DrinkActivity.this);
+      try {
+        SQLiteDatabase db = helper.getWritableDatabase();
+        db.update(
+            "DRINK",
+            drinkValues,
+            "_id = ?",
+            new String[]{Integer.toString(drinkno)}
 
-      db.close();
+        );
 
-    } catch(SQLiteException ex){
-      showException(this,ex);
+        db.close();
+
+      } catch(SQLiteException ex){
+        return false;
+      }
+      return true;
+    }
+
+    @Override protected void onPostExecute(Boolean success) {
+      if(!success){
+        Toast toat = Toast.makeText(DrinkActivity.this,"Database unavailable",Toast.LENGTH_SHORT);
+        toat.show();
+      }
     }
   }
 }
