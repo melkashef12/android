@@ -3,7 +3,7 @@ package joke.hfad.com.joke;
 import android.app.IntentService;
 import android.content.Intent;
 import android.os.Handler;
-import android.util.Log;
+import android.widget.Toast;
 
 public class DelayedMessageService extends IntentService {
 
@@ -36,7 +36,11 @@ public class DelayedMessageService extends IntentService {
     return intent.getExtras().getString(EXTRA_MESSAGE);
   }
 
-  private void showText(String text) {
-    Log.v("DelayedMessageService","The message is :"+text);
+  private void showText(final String text) {
+    handler.post(new Runnable() {
+      @Override public void run() {
+        Toast.makeText(getApplicationContext(),text,Toast.LENGTH_LONG).show();
+      }
+    });
   }
 }
